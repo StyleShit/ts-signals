@@ -42,6 +42,7 @@ export function createEffect(cb: EffectCallback) {
 
 	try {
 		cb();
+		// eslint-disable-next-line no-useless-catch -- Intentionally rethrowing the error
 	} catch (e) {
 		throw e;
 	} finally {

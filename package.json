@@ -6,10 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src/."
   },
   "devDependencies": {
+    "@eslint/js": "^9.1.1",
+    "eslint": "^8.57.0",
+    "globals": "^15.0.0",
     "typescript": "^5.2.2",
+    "typescript-eslint": "^7.7.1",
     "vite": "^5.2.0"
   }
 }

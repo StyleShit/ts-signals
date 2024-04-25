@@ -24,6 +24,10 @@ export function createSignal<T>(
 		},
 
 		set: (newValue) => {
+			if (Object.is(signal.value, newValue)) {
+				return;
+			}
+
 			signal.value = newValue;
 
 			signal.listeners.forEach((cb) => cb());

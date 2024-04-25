@@ -13,9 +13,15 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </a>
     <h1>Signals</h1>
     <div class="card">
-      <button id="counter" type="button"></button>
+      <div id="counter">
+        <button id="increment" type="button">Increment</button>
+        <button id="reset" type="button">Reset</button>
+        <br /><br />
+        <div id="count"></div>
+        <div id="count-doubled"></div>
+      </div>
     </div>
   </div>
 `;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!);
+setupCounter(document.querySelector<HTMLDivElement>('#counter')!);

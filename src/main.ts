@@ -16,9 +16,17 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <div id="counter">
         <button id="increment" type="button">Increment</button>
         <button id="reset" type="button">Reset</button>
+
         <br /><br />
+
         <div id="count"></div>
         <div id="count-doubled"></div>
+
+        <br />
+
+        <input type="text" autocomplete="off" id="name" />
+        <br /><br />
+        <span id="name-output"></span>
       </div>
     </div>
   </div>

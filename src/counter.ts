@@ -1,18 +1,11 @@
-import { createSignal } from './signals';
+import { createEffect, createSignal } from './signals';
 
 export function setupCounter(element: HTMLButtonElement) {
 	const [count, setCount] = createSignal(0);
 
-	const increment = () => {
-		setCount(count() + 1);
-		writeDOM();
-	};
-
-	const writeDOM = () => {
+	createEffect(() => {
 		element.innerHTML = `count is ${count()}`;
-	};
+	});
 
-	element.addEventListener('click', increment);
-
-	writeDOM();
+	element.addEventListener('click', () => setCount(count() + 1));
 }

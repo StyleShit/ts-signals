@@ -9,7 +9,7 @@ It is not intended to be used in production code.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a782e12b-6f39-48f2-b8c0-ced9cd483866/deploy-status)](https://app.netlify.com/sites/ts-signals/deploys)
 
-[https://ts-signals.netlify.app/](https://ts-signals.netlify.app/)
+[ts-signals.netlify.app](https://ts-signals.netlify.app)
 
 ## What are Signals?
 

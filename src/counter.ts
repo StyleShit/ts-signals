@@ -1,10 +1,10 @@
-import { createEffect, createSignal } from './signals';
+import { createEffect, createMemo, createSignal } from './signals';
 
 export function setupCounter(element: HTMLDivElement) {
 	const [count, setCount] = createSignal(0);
 	const [name, setName] = createSignal('StyleShit');
 
-	const doubled = () => count() * 2;
+	const doubled = createMemo(() => count() * 2);
 
 	const increment = element.querySelector<HTMLButtonElement>('#increment')!;
 	const reset = element.querySelector<HTMLButtonElement>('#reset')!;

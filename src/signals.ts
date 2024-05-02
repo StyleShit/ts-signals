@@ -49,3 +49,15 @@ export function createEffect(cb: EffectCallback) {
 		stack.delete(cb);
 	}
 }
+
+export function createMemo<T>(cb: () => T): () => T {
+	const [value, setValue] = createSignal<T | null>(null);
+
+	createEffect(() => {
+		setValue(cb());
+	});
+
+	// At this point, the value is guaranteed to be T, the effect takes care of it.
+	// We initialize the signal with `null` to avoid calculating the value twice unnecessarily.
+	return value as () => T;
+}

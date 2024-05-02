@@ -37,13 +37,22 @@ export function createSignal<T>(
 	return [signal.get, signal.set];
 }
 
-export function createEffect(cb: EffectCallback) {
-	stack.add(cb);
+type EffectOptions = {
+	batch: boolean;
+};
+
+export function createEffect(
+	cb: EffectCallback,
+	options: EffectOptions = { batch: true },
+) {
+	const effectFn = options.batch ? debounce(cb) : cb;
+
+	stack.add(effectFn);
 
 	try {
 		cb();
 	} catch (e) {
-		stack.delete(cb);
+		stack.delete(effectFn);
 
 		throw e;
 	}
@@ -59,4 +68,17 @@ export function createMemo<T>(cb: () => T): () => T {
 	// At this point, the value is guaranteed to be T, the effect takes care of it.
 	// We initialize the signal with `null` to avoid calculating the value twice unnecessarily.
 	return value as () => T;
+}
+
+function debounce<Args extends unknown[]>(
+	fn: (...args: Args) => unknown,
+	ms = 0,
+) {
+	let timeout: number;
+
+	return (...args: Args) => {
+		clearTimeout(timeout);
+
+		timeout = setTimeout(() => fn(...args), ms);
+	};
 }

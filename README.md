@@ -57,6 +57,50 @@ The effect automatically infers its dependencies, and runs whenever the `count` 
 
 Magic! 🎩✨
 
+You can also use Signals to create derived state:
+
+```typescript
+import { createSignal, createEffect } from './signals';
+
+const [count, setCount] = createSignal(0);
+const doubled = () => count() * 2;
+
+createEffect(() => {
+	console.log('Doubled:', doubled());
+});
+
+setCount(1); // Doubled: 2
+setCount(2); // Doubled: 4
+```
+
+A derived Signal is just a function that returns a value based on other Signals. It has to be a function, so that it can be re-evaluated whenever its dependencies change.
+
+If the derived state calculation is expensive, you can use `createMemo` to memoize the result:
+
+```typescript
+import { createSignal, createEffect, createMemo } from './signals';
+
+const [count, setCount] = createSignal(0);
+const doubled = createMemo(() => {
+	console.log('Calculating');
+
+	return count() * 2;
+});
+
+createEffect(() => {
+	console.log('Doubled:', doubled());
+});
+
+createEffect(() => {
+	console.log('Again:', doubled());
+});
+
+setCount(1); // Logs: "Calculating", "Doubled: 2", "Again: 2"
+setCount(2); // Logs: "Calculating", "Doubled: 4", "Again: 4"
+```
+
+The `doubled` value calculation will run only once per change of `count`, even if multiple effects depend on it.
+
 ## How it Works Under the Hood?
 
 A "Signal" is just an object that holds a value and gives you the option to read and write to it. Roughly something like this:

@@ -51,10 +51,11 @@ export function createEffect(
 
 	try {
 		cb();
+		// eslint-disable-next-line no-useless-catch -- Intentionally rethrowing the error
 	} catch (e) {
-		stack.delete(effectFn);
-
 		throw e;
+	} finally {
+		stack.delete(effectFn);
 	}
 }
 

@@ -7,7 +7,7 @@ type Signal<T = unknown> = {
 
 type EffectCallback = () => void;
 
-const stack = new Set<EffectCallback>();
+let currentEffect: EffectCallback | null = null;
 
 export function createSignal<T>(
 	initialValue: T,
@@ -18,7 +18,9 @@ export function createSignal<T>(
 		listeners: new Set(),
 
 		get: () => {
-			stack.forEach((cb) => signal.listeners.add(cb));
+			if (currentEffect) {
+				signal.listeners.add(currentEffect);
+			}
 
 			return signal.value;
 		},
@@ -47,7 +49,7 @@ export function createEffect(
 ) {
 	const effectFn = options.batch ? debounce(cb) : cb;
 
-	stack.add(effectFn);
+	currentEffect = effectFn;
 
 	try {
 		cb();
@@ -55,7 +57,7 @@ export function createEffect(
 	} catch (e) {
 		throw e;
 	} finally {
-		stack.delete(effectFn);
+		currentEffect = null;
 	}
 }
 

@@ -125,14 +125,17 @@ We utilize JavaScript's call stack to keep track of the dependencies of each eff
 Whenever a Signal is read inside an effect, we add the effect to the Signal's list of subscribers, and whenever the Signal is written to, we notify all the subscribers to run their effects:
 
 ```typescript
-function createEffect(cb) {
-	callStack.add(cb);
+let currentEffect = null;
 
-	// This will trigger the Signal's `get` method, which in turn,
-	// will add the effect to the Signal's subscribers list.
+function createEffect(cb) {
+	currentEffect = cb;
+
+	// This will trigger the `get` method of any Signal that's
+	// being accessed inside the effect, which in turn,
+	// add the effect to the Signal's subscribers list.
 	cb();
 
-	callStack.delete(cb);
+	currentEffect = null;
 }
 
 function createSignal() {
@@ -142,7 +145,7 @@ function createSignal() {
 		subscribers: new Set(),
 
 		get() {
-			// Merge `this.subscribers` with the current call stack.
+			this.subscribers.add(currentEffect);
 
 			return this.value;
 		},
@@ -150,7 +153,7 @@ function createSignal() {
 		set(newValue) {
 			this.value = newValue;
 
-			// Notify all the subscribers in `this.subscribers`.
+			this.subscribers.forEach((effect) => effect());
 		},
 	};
 

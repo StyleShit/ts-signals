@@ -47,18 +47,20 @@ export function createEffect(
 	cb: EffectCallback,
 	options: EffectOptions = { batch: true },
 ) {
-	const effectFn = options.batch ? debounce(cb) : cb;
+	const wrappedEffect = debounceIf(() => {
+		currentEffect = wrappedEffect;
 
-	currentEffect = effectFn;
+		try {
+			cb();
+			// eslint-disable-next-line no-useless-catch -- Intentionally rethrowing the error
+		} catch (e) {
+			throw e;
+		} finally {
+			currentEffect = null;
+		}
+	}, options.batch);
 
-	try {
-		cb();
-		// eslint-disable-next-line no-useless-catch -- Intentionally rethrowing the error
-	} catch (e) {
-		throw e;
-	} finally {
-		currentEffect = null;
-	}
+	wrappedEffect();
 }
 
 export function createMemo<T>(cb: () => T): () => T {
@@ -71,6 +73,10 @@ export function createMemo<T>(cb: () => T): () => T {
 	// At this point, the value is guaranteed to be T, the effect takes care of it.
 	// We initialize the signal with `null` to avoid calculating the value twice unnecessarily.
 	return value as () => T;
+}
+
+function debounceIf(effect: EffectCallback, condition: boolean) {
+	return condition ? debounce(effect) : effect;
 }
 
 function debounce<Args extends unknown[]>(
